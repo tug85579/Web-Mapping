@@ -1,0 +1,136 @@
+<!--FOR THE A USE A DIFFERENT GEOJSON! -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Choropleth Tutorial</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
+<link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
+<style>
+	body {
+  margin: 0;
+  padding: 0;
+}
+
+h2,
+h3 {
+  margin: 10px;
+  font-size: 1.2em;
+}
+
+h3 {
+  font-size: 1em;
+}
+
+p {
+  font-size: 0.85em;
+  margin: 10px;
+  text-align: left;
+}
+
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.map-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  margin-right: 20px;
+  font-family: Arial, sans-serif;
+  overflow: auto;
+  border-radius: 3px;
+}
+
+#features {
+  top: 0;
+  height: 100px;
+  margin-top: 20px;
+  width: 300px;
+}
+
+#legend {
+  padding: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 18px;
+  height: 175px;
+  margin-bottom: 40px;
+  width: 150px;
+}
+
+.legend-key {
+  display: inline-block;
+  border-radius: 20%;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+}
+
+</style>
+</head>
+<body>
+<div id="map"></div>
+    <div class='map-overlay' id='features'><h2>COVID-19 cases as of 26 April</h2><div id='pd'><p></p></div></div>
+<div class='map-overlay' id='legend'></div>
+<script>
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoidHVnODU1NzkiLCJhIjoiY2s4M3Z1MHV0MGFnazNlbzZkeGprMHhmZSJ9.6ilxnb0lqH1FBK_B1lGvqA';
+        
+        
+    var map = new mapboxgl.Map({
+  container: 'map',
+
+  style: 'mapbox://styles/tug85579/ck9jhx8ze0tii1ipp99a585do'
+});
+
+    map.on('load', function() {
+        
+map.on('mousemove', function(e) {
+  var counties = map.queryRenderedFeatures(e.point, {
+    layers: ['countiescovid']
+  });
+
+  if (counties.length > 0) {
+    document.getElementById('pd').innerHTML = '<h3><strong>' + counties[0].properties.NAME + '</strong></h3><p><strong><em>' + counties[0].properties.Cases + '</strong> confirmed cases</em></p>';
+  } else {
+    document.getElementById('pd').innerHTML = '<p>Choose a county</p>';
+  }
+});
+        
+  var layers = ['0', '1-100', '100-1000', '1000-5000', '5000-10000', '10000-20000', '20000-30000', '30000-40000','40000+'];
+var colors = ['#af99fe', '#9f88f1', '#8f77e4', '#7f67d7', '#6f56ca', '#4e36b1', '#3c26a4', '#261598', '#01008b'];
+        
+for (i = 0; i < layers.length; i++) {
+  var layer = layers[i];
+  var color = colors[i];
+  var item = document.createElement('div');
+  var key = document.createElement('span');
+  key.className = 'legend-key';
+  key.style.backgroundColor = color;
+
+  var value = document.createElement('span');
+  value.innerHTML = layer;
+  item.appendChild(key);
+  item.appendChild(value);
+  legend.appendChild(item);
+}
+
+
+        
+map.getCanvas().style.cursor = 'default';
+        
+map.fitBounds([[-133.2421875, 16.972741], [-47.63671875, 52.696361]]);
+
+});
+    
+    
+
+
+        
+      </script>
